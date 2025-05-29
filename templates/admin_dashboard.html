@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block contenido %}
+<div class="admin-dashboard-menu">
+    <div class="menu-botonera">
+        <!-- Botón USERS -->
+        <a href="{{ url_for('usuarios.users_view') }}" class="btn-dashboard">
+            <img src="{{ url_for('static', filename='icons/users.png') }}" alt="Users">
+            <span>USERS</span>
+            <small>Administer user information</small>
+        </a>
+
+        <!-- Botón SCRAPING -->
+        <a href="/scraping/" class="btn-dashboard">
+            <img src="{{ url_for('static', filename='icons/scraper.png') }}" alt="Scraping">
+            <span>SCRAPING</span>
+            <small>Update the database using webscraping</small>
+        </a>
+
+        <!-- Botón REPORTS -->
+        <a href="/reportes/dashboard" class="btn-dashboard">
+            <img src="{{ url_for('static', filename='icons/reports.png') }}" alt="Reports">
+            <span>REPORTS</span>
+            <small>Generate reports based on the database information</small>
+        </a>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block contenido %}
+<div class="formulario-usuario">
+
+    <div class="formulario-header fila-centrada">
+        <img src="{{ url_for('static', filename='icons/edit.png') }}" alt="Editar perfil" class="icono-titulo">
+        <h2 class="titulo-seccion">EDIT PROFILE</h2>
+    </div>
+
+    <form method="POST" class="card-formulario">
+        {{ form.hidden_tag() }}
+
+        <div class="perfil-datos">
+            <div class="columna">
+                <label class="form-label">Name</label>
+                {{ form.nombre(class="form-control", readonly=not editable.nombre) }}
+            </div>
+            <div class="columna">
+                <label class="form-label">Role</label>
+                {{ form.rol(class="form-control", disabled=not editable.rol) }}
+            </div>
+        </div>
+
+        <div class="perfil-datos">
+            <div class="columna">
+                <label class="form-label">ID</label>
+                {{ form.documento(class="form-control", disabled=True) }}
+            </div>
+            <div class="columna">
+                <label class="form-label">Email</label>
+                {{ form.email(class="form-control", readonly=not editable.email) }}
+            </div>
+        </div>
+
+        {% if editable.contrasena %}
+            <div class="perfil-datos">
+                <div class="columna">
+                    <label class="form-label">New Password</label>
+                    {{ form.nueva_contrasena(class="form-control") }}
+                </div>
+                <div class="columna">
+                    <label class="form-label">Confirm Password</label>
+                    {{ form.confirmar_contrasena(class="form-control") }}
+                </div>
+            </div>
+        {% endif %}
+
+        <div class="boton-acciones-form">
+            <a href="{{ volver_url }}" class="btn-icono" aria-label="Volver" title="Volver">
+                <img src="{{ url_for('static', filename='icons/back.png') }}" alt="Volver">
+            </a>
+            <button type="submit" class="btn-icono" aria-label="Guardar cambios" title="Guardar">
+                <img src="{{ url_for('static', filename='icons/save.png') }}" alt="Guardar">
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %}

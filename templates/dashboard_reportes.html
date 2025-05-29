@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block contenido %}
+<div class="perfil-contenedor">
+
+    <div class="perfil-card sombra-suave">
+        <div class="perfil-header fila-centrada espacio-entre">
+            <div class="fila-centrada">
+                <img src="{{ url_for('static', filename='icons/reports.png') }}" class="icono-titulo" alt="Reportes">
+                <span class="titulo-seccion">MIS REPORTES</span>
+            </div>
+            <a href="{{ url_for('reportes.crear_reporte') }}" class="boton-flotante derecha" aria-label="Crear nuevo reporte">
+                <img src="{{ url_for('static', filename='icons/agregar.png') }}" alt="Crear reporte" class="icono-boton">
+            </a>
+        </div>
+
+        {% if reportes %}
+        <div class="resultado-propiedades">
+            {% for r in reportes %}
+            <div class="tarjeta-propiedad sombra-ligera espacio-tarjeta">
+                <p><strong>Fecha:</strong> {{ r.fecha.strftime('%Y-%m-%d %H:%M') }}</p>
+                <p><strong>Filtros usados:</strong></p>
+                <ul class="lista-filtros">
+                    {% for k, v in r.filtros.items() %}
+                    <li><strong>{{ k }}:</strong> {{ v }}</li>
+                    {% endfor %}
+                </ul>
+
+                <div class="usuario-acciones">
+                <a href="{{ url_for('reportes.descargar_reporte', id=r._id) }}" class="btn-icono" title="Descargar">
+                    <img src="{{ url_for('static', filename='icons/save.png') }}" alt="Descargar">
+                </a>
+                <a href="#" class="btn-icono btn-eliminar-usuario"
+                    data-nombre="el reporte de {{ r.fecha.strftime('%d/%m/%Y') }}"
+                    data-url="{{ url_for('reportes.eliminar_reporte', id=r._id) }}"
+                    title="Eliminar">
+                    <img src="{{ url_for('static', filename='icons/delete.png') }}" alt="Eliminar">
+                </a>
+                </div>
+
+
+
+                
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="no-usuarios centrado-texto">
+            <p>No se han generado reportes aún.</p>
+        </div>
+        {% endif %}
+    </div>
+
+    {% include "back_button.html" %}
+</div>
+{% endblock %}

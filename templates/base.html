@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Colombia Realty HUB</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Cormorant+Infant&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='estilos.css') }}" />
+  </head>
+
+  <body class="{% if current_user.is_authenticated %}
+      bg-claro
+    {% else %}
+      bg-oscuro
+    {% endif %}">
+    {% if current_user.is_authenticated %}
+      <header class="header-principal">
+        <div class="logo-completo">
+          <img src="{{ url_for('static', filename='logo.png') }}" alt="Logo" />
+          <div class="logo-texto">
+            <span class="titulo-logo">COLOMBIA</span>
+            <span class="subtitulo-logo">REALTY HUB</span>
+          </div>
+        </div>
+        <nav class="nav-header">
+          <a href="{{ url_for('dashboard.dashboard_view') }}" class="btn-icono" aria-label="Inicio"><img src="{{ url_for('static', filename='icons/home.png') }}" alt="Inicio" /></a>
+          <button class="btn-icono" id="boton-menu" aria-label="Menú"><img src="{{ url_for('static', filename='icons/menu.png') }}" alt="Menú" /></button>
+        </nav>
+      </header>
+    {% endif %}
+
+    {% with messages=get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="toast-container">
+          {% for category, message in messages %}
+            <div class="toast {{ category|lower }}">{{ message }}</div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    <script>
+      setTimeout(() => {
+        const flashes = document.querySelectorAll('.flash-message')
+        flashes.forEach((f) => (f.style.display = 'none'))
+      }, 5000)
+    </script>
+
+    <main class="layout-contenido">
+      {% block contenido %}
+      {% endblock %}
+    </main>
+
+    <div id="popup-confirmacion" class="popup-contenedor" style="display: none;">
+      <div class="popup-card">
+        <img src="{{ url_for('static', filename='icons/warning.svg') }}" class="logo-popup" alt="Advertencia" />
+        <p class="popup-mensaje">
+          Are you sure you want to delete <strong id="popup-nombre-objeto">this item</strong>?
+        </p>
+        <div class="popup-acciones">
+          <button onclick="cerrarPopup()" class="btn-icono" aria-label="Cancelar"><img src="{{ url_for('static', filename='icons/cancel.png') }}" alt="Cancelar" /></button>
+          <form method="POST" id="popup-form" action="">
+            <button type="submit" class="btn-icono" aria-label="Eliminar"><img src="{{ url_for('static', filename='icons/delete.png') }}" alt="Eliminar" /></button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div id="menu-lateral" class="menu-lateral oculto">
+      <div class="logo-menu-centrado">
+        <img src="{{ url_for('static', filename='logo.png') }}" alt="Logo" class="logo-menu-grande" />
+        <div class="texto-logo centrado">
+          <span class="titulo-logo">COLOMBIA</span>
+          <span class="subtitulo-logo">REALTY HUB</span>
+        </div>
+      </div>
+
+      <nav class="menu-opciones">
+        {% if current_user.rol == 'Administrador' %}
+          <a href="{{ url_for('usuarios.perfil') }}"><img src="{{ url_for('static', filename='icons/profile.png') }}" /> My Profile</a>
+          <a href="{{ url_for('usuarios.users_view') }}"><img src="{{ url_for('static', filename='icons/users.png') }}" /> Users</a>
+          <a href="/reportes/dashboard"><img src="{{ url_for('static', filename='icons/reports.png') }}" /> Reports</a>
+          <a href="/scraping/"><img src="{{ url_for('static', filename='icons/scraper.png') }}" /> Scraping</a>
+        {% elif current_user.rol == 'Analista' %}
+          <a href="{{ url_for('usuarios.perfil') }}"><img src="{{ url_for('static', filename='icons/profile.png') }}" /> My Profile</a>
+          <a href="/reportes/dashboard"><img src="{{ url_for('static', filename='icons/reports.png') }}" /> Reports</a>
+          <a href="/scraping/"><img src="{{ url_for('static', filename='icons/scraper.png') }}" /> Scraping</a>
+        {% endif %}
+        <a href="{{ url_for('auth.logout') }}"><img src="{{ url_for('static', filename='icons/logout.png') }}" /> Log out</a>
+      </nav>
+    </div>
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        const menu = document.getElementById('menu-lateral')
+        const boton = document.getElementById('boton-menu')
+      
+        if (!menu || !boton) return
+      
+        boton.addEventListener('click', (e) => {
+          e.stopPropagation()
+          if (menu.classList.contains('visible')) {
+            menu.classList.remove('visible')
+            menu.classList.add('oculto')
+          } else {
+            menu.classList.remove('oculto')
+            menu.classList.add('visible')
+          }
+        })
+      
+        // Ocultar si haces clic fuera
+        document.addEventListener('click', (e) => {
+          if (menu.classList.contains('visible') && !menu.contains(e.target) && e.target !== boton) {
+            menu.classList.remove('visible')
+            menu.classList.add('oculto')
+          }
+        })
+      
+        // Ocultar si haces clic en una opción del menú
+        const enlaces = menu.querySelectorAll('a')
+        enlaces.forEach((enlace) => {
+          enlace.addEventListener('click', () => {
+            menu.classList.remove('visible')
+            menu.classList.add('oculto')
+          })
+        })
+      })
+    </script>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        const botones = document.querySelectorAll('.btn-eliminar-usuario')
+      
+        botones.forEach((boton) => {
+          boton.addEventListener('click', function (e) {
+            e.preventDefault()
+            const nombre = this.dataset.nombre
+            const url = this.dataset.url
+            abrirPopup(nombre, url)
+          })
+        })
+      })
+      
+      function abrirPopup(nombre, url) {
+        document.getElementById('popup-nombre-objeto').innerText = nombre
+        document.getElementById('popup-form').action = url
+        document.getElementById('popup-confirmacion').style.display = 'flex'
+      }
+      
+      function cerrarPopup() {
+        document.getElementById('popup-confirmacion').style.display = 'none'
+      }
+    </script>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        const menu = document.getElementById('menu-lateral')
+        const boton = document.getElementById('boton-menu')
+      
+        boton.addEventListener('click', () => {
+          menu.classList.toggle('activo')
+        })
+      })
+    </script>
+  </body>
+</html>

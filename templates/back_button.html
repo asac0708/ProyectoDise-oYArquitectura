@@ -1,0 +1,9 @@
+<a href="{% if current_user.rol == 'Administrador' %}
+             {{ url_for('dashboard.admin_dashboard') }}
+         {% else %}
+             {{ url_for('dashboard.analista_dashboard') }}
+         {% endif %}"
+   class="boton-flotante izquierda" aria-label="Volver">
+    <img src="{{ url_for('static', filename='icons/back.png') }}" alt="Volver">
+</a>
+

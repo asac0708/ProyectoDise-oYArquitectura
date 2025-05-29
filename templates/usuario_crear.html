@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block contenido %}
+<div class="formulario-usuario">
+
+    <!-- Título -->
+    <div class="formulario-header fila-centrada">
+        <img src="{{ url_for('static', filename='icons/add.png') }}" alt="Icono perfil" class="icono-titulo">
+        <span class="titulo-seccion">CREATE PROFILE</span>
+    </div>
+
+    <form method="POST" class="card-formulario">
+        {{ form.hidden_tag() }}
+
+        <!-- Primera fila: nombre y rol -->
+        <div class="perfil-datos">
+            <div class="columna">
+                {{ form.nombre.label(class="form-label") }}
+                {{ form.nombre(class="form-control") }}
+            </div>
+            <div class="columna">
+                {{ form.rol.label(class="form-label") }}
+                {{ form.rol(class="form-control") }}
+            </div>
+        </div>
+
+        <!-- Segunda fila: ID generado y email -->
+        <div class="perfil-datos">
+            <div class="columna">
+                <label class="form-label">ID (Generated)</label>
+                <input type="text" class="form-control" value="{{ id_generado }}" readonly>
+            </div>
+            <div class="columna">
+                {{ form.email.label(class="form-label") }}
+                {{ form.email(class="form-control") }}
+            </div>
+        </div>
+
+        <!-- Tercera fila: password -->
+        <div class="perfil-datos">
+            <div class="columna">
+                {{ form.password.label(class="form-label") }}
+                {{ form.password(class="form-control") }}
+            </div>
+        </div>
+
+        <!-- Botones flotantes -->
+        <a href="{{ url_for('usuarios.users_view') }}" class="boton-flotante izquierda" aria-label="Volver">
+            <img src="{{ url_for('static', filename='icons/back.png') }}" alt="Volver">
+        </a>
+
+        <button type="submit" class="boton-flotante derecha" aria-label="Guardar">
+            <img src="{{ url_for('static', filename='icons/save.png') }}" alt="Guardar">
+        </button>
+    </form>
+</div>
+{% endblock %}

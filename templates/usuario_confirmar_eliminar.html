@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block contenido %}
+<div class="popup-contenedor">
+
+    <div class="popup-card">
+        <img src="{{ url_for('static', filename='logo.png') }}" alt="Logo" class="logo-popup">
+        <h2>COLOMBIA</h2>
+        <h3>REALTY HUB</h3>
+        <p class="popup-mensaje">
+            Are you sure you want to delete <strong>{{ usuario.nombre }}</strong>?
+        </p>
+
+        <form method="POST" class="popup-acciones">
+            <a href="{{ url_for('usuarios.users_view') }}" class="icono-btn">
+                <img src="{{ url_for('static', filename='icons/cancel.png') }}" alt="Cancelar">
+            </a>
+            <button type="submit" class="icono-btn">
+                <img src="{{ url_for('static', filename='icons/confirm.png') }}" alt="Eliminar">
+            </button>
+        </form>
+    </div>
+
+</div>
+{% endblock %}

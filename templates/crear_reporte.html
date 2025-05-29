@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block contenido %}
+<div class="perfil-contenedor">
+
+    <div class="perfil-card">
+        <div class="perfil-header fila-centrada">
+            <img src="{{ url_for('static', filename='icons/reports.png') }}" class="icono-titulo" alt="Reporte">
+            <span class="titulo-seccion">GENERAR REPORTE</span>
+        </div>
+
+        <form method="POST" class="formulario-usuario">
+            <!-- Filtros por ubicación -->
+            <div class="form-group">
+                <label for="ciudad" class="form-label">Ciudad</label>
+                <input list="ciudades" id="ciudad" name="Ciudad" class="form-control" placeholder="Ciudad">
+                <datalist id="ciudades">
+                    {% for c in opciones["Ciudad"] %}
+                    <option value="{{ c }}">
+                    {% endfor %}
+                </datalist>
+            </div>
+
+            <div class="form-group">
+                <label for="municipio" class="form-label">Municipio</label>
+                <input list="municipios" id="municipio" name="Municipio" class="form-control" placeholder="Municipio">
+                <datalist id="municipios">
+                    {% for m in opciones["Municipio"] %}
+                    <option value="{{ m }}">
+                    {% endfor %}
+                </datalist>
+            </div>
+
+            <div class="form-group">
+                <label for="barrio" class="form-label">Barrio</label>
+                <input list="barrios" id="barrio" name="Barrio" class="form-control" placeholder="Barrio">
+                <datalist id="barrios">
+                    {% for b in opciones["Barrio"] %}
+                    <option value="{{ b }}">
+                    {% endfor %}
+                </datalist>
+            </div>
+
+            <div class="form-group">
+                <label for="tipo" class="form-label">Tipo de Inmueble</label>
+                <input list="tipos" id="tipo" name="Tipo de Inmueble" class="form-control" placeholder="Casa, Apartamento...">
+                <datalist id="tipos">
+                    {% for t in opciones["Tipo de Inmueble"] %}
+                    <option value="{{ t }}">
+                    {% endfor %}
+                </datalist>
+            </div>
+
+            <!-- Otros filtros -->
+            <div class="form-group">
+                <label for="estrato" class="form-label">Estrato</label>
+                <input type="number" name="Estrato" id="estrato" class="form-control" min="1" max="6" placeholder="1 - 6">
+            </div>
+
+            <div class="form-group">
+                <label for="precio_min" class="form-label">Precio mínimo</label>
+                <input type="number" name="precio_min" id="precio_min" class="form-control" placeholder="Ej: 200000000">
+            </div>
+
+            <div class="form-group">
+                <label for="precio_max" class="form-label">Precio máximo</label>
+                <input type="number" name="precio_max" id="precio_max" class="form-control" placeholder="Ej: 800000000">
+            </div>
+
+            <!-- Botón -->
+            <div class="boton-acciones-form">
+                <a href="{{ url_for('dashboard.dashboard_view') }}" class="btn-icono" aria-label="Volver">
+                    <img src="{{ url_for('static', filename='icons/back.png') }}" alt="Volver">
+                </a>
+                <button type="submit" class="btn-icono" aria-label="Generar reporte">
+                    <img src="{{ url_for('static', filename='icons/save.png') }}" alt="Generar">
+                </button>
+            </div>
+        </form>
+    </div>
+
+</div>
+{% endblock %}

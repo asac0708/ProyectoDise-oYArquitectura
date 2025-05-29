@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+{% block contenido %}
+<div class="scraping-panel">
+  <div class="filtros">
+    <select id="tipo">
+      <option value="venta">Venta</option>
+      <option value="arriendo">Arriendo</option>
+    </select>
+
+    <input list="ciudades" id="ciudad" placeholder="Ciudad">
+      <datalist id="ciudades">
+        {% for ciudad in opciones["Ciudad"] %}
+          <option value="{{ ciudad }}">
+        {% endfor %}
+      </datalist>
+
+    <input list="municipios" id="municipio" placeholder="Municipio">
+    <datalist id="municipios">
+      {% for municipio in opciones["Municipio"] %}
+        <option value="{{ municipio }}">
+      {% endfor %}
+    </datalist>
+    
+    <input list="barrios" id="barrio" placeholder="Barrio">
+    <datalist id="barrios">
+      {% for barrio in opciones["Barrio"] %}
+        <option value="{{ barrio }}">
+      {% endfor %}
+    </datalist>
+
+    <input type="number" id="precio_min" placeholder="Precio mínimo">
+    <input type="number" id="precio_max" placeholder="Precio máximo">
+
+    <input type="number" id="area_min" placeholder="Área mínima">
+    <input type="number" id="area_max" placeholder="Área máxima">
+
+  <input list="tipos" id="tipo_inmueble" placeholder="Tipo de inmueble">
+  <datalist id="tipos">
+    {% for tipo in opciones["Tipo de Inmueble"] %}
+      <option value="{{ tipo }}">
+    {% endfor %}
+  </datalist>    <input type="text" id="estrato" placeholder="Estrato">
+
+    <button onclick="buscarPropiedades()">🔍 Buscar</button>
+  </div>
+
+  <div id="resultados" class="resultado-propiedades">
+</div>
+</div>
+
+<script>
+async function buscarPropiedades() {
+  const tipo = document.getElementById("tipo").value;
+  const ciudad = document.getElementById("ciudad").value;
+  const municipio = document.getElementById("municipio").value;
+  const barrio = document.getElementById("barrio").value;
+  const precio_min = document.getElementById("precio_min").value;
+  const precio_max = document.getElementById("precio_max").value;
+  const area_min = document.getElementById("area_min").value;
+  const area_max = document.getElementById("area_max").value;
+  const tipo_inmueble = document.getElementById("tipo_inmueble").value;
+  const estrato = document.getElementById("estrato").value;
+
+  const params = new URLSearchParams({
+    ciudad, municipio, barrio, precio_min, precio_max,
+    area_min, area_max, "tipo de inmueble": tipo_inmueble, estrato
+  });
+
+  const res = await fetch(`/api/propiedades/${tipo}?` + params.toString());
+  const data = await res.json();
+
+  const resultados = document.getElementById("resultados");
+  resultados.innerHTML = "";
+
+  if (!Array.isArray(data) || data.length === 0) {
+    resultados.innerHTML = "<p>No se encontraron resultados.</p>";
+    return;
+  }
+
+  data.forEach(p => {
+    resultados.innerHTML += `
+      <div class="tarjeta-propiedad">
+        <p><strong>${p.Tipo}</strong> - ${p["Tipo de Inmueble"] || ""}</p>
+        <p>${p.Ciudad || ""}, ${p.Municipio || ""}, ${p.Barrio || ""}</p>
+        <p>💰 ${p.Precio}</p>
+        <p>🛏 ${p.Habitaciones || "?"} | 🚽 ${p.Baños || "?"} | 📐 ${p["Área Construida"] || "?"}</p>
+        <a href="${p.Enlace}" target="_blank">Ver más</a>
+      </div>
+    `;
+  });
+}
+</script>
+
+{% endblock %}
+

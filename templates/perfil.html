@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block contenido %}
+<div class="perfil-contenedor">
+
+    <div class="perfil-card perfil-dos-columnas">
+        
+        <!-- Encabezado -->
+        <div class="perfil-header fila-centrada">
+            <img src="{{ url_for('static', filename='icons/profile.png') }}" alt="Profile Icon" class="icono-titulo">
+            <span class="titulo-seccion">MY PROFILE</span>
+        </div>
+
+        <!-- Datos personales -->
+        <div class="perfil-datos">
+            <div class="columna">
+                <p><strong>Name</strong><br>{{ current_user.nombre }}</p>
+                <p><strong>ID</strong><br>{{ current_user.documento }}</p>
+            </div>
+            <div class="columna">
+                <p><strong>Role</strong><br>{{ current_user.rol }}</p>
+                <p><strong>Email</strong><br>{{ current_user.email }}</p>
+            </div>
+        </div>
+    </div>
+    {% include "back_button.html" %}
+    <a href="{{ url_for('usuarios.editar_usuario_view', id=current_user.id) }}" class="boton-flotante derecha" aria-label="Editar">
+        <img src="{{ url_for('static', filename='icons/edit.png') }}" alt="Editar">
+    </a>
+
+</div>
+{% endblock %}

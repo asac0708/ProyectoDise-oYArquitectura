@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+
+{% block contenido %}
+<div class="admin-dashboard">
+    <div class="dashboard-header fila-centrada">
+        <img src="{{ url_for('static', filename='icons/users.png') }}" alt="Users" class="icono-titulo">
+        <h2 class="titulo-seccion">USERS</h2>
+    </div>
+        <div class="barra-busqueda">
+        <input type="text" id="input-busqueda" placeholder="Search by name, ID or role...">
+    </div>
+    <div class="usuario-lista">
+        {% for usuario in usuarios %}
+        <div class="usuario-card">
+            <div class="usuario-info">
+                <p><strong>{{ usuario.nombre }}</strong> &nbsp;&nbsp; ID: {{ usuario.documento }} &nbsp;&nbsp; {{ usuario.rol }}</p>
+            </div>
+            <div class="usuario-acciones">
+                <a href="{{ url_for('usuarios.editar_usuario_view', id=usuario._id) }}" class="btn-icono" aria-label="Editar">
+                    <img src="{{ url_for('static', filename='icons/edit.png') }}" alt="Editar">
+                </a>
+                <a href="#" class="btn-icono btn-eliminar-usuario"
+                    data-nombre="{{ usuario.nombre }}"
+                    data-url="{{ url_for('usuarios.confirmar_eliminar', id=usuario._id) }}"
+                    aria-label="Eliminar">
+                    <img src="{{ url_for('static', filename='icons/delete.png') }}" alt="Eliminar">
+                </a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% if not usuarios %}
+    <div class="no-usuarios">
+        <p>No users found.</p>
+    </div>
+    {% endif %}
+    <a href="{{ url_for('usuarios.crear_usuario_view') }}" class="boton-flotante" aria-label="Crear usuario">
+        <img src="{{ url_for('static', filename='icons/add.png') }}" alt="Crear Usuario">
+    </a>
+
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const inputBusqueda = document.getElementById("input-busqueda");
+        const lista = document.querySelector(".usuario-lista");
+
+        inputBusqueda.addEventListener("input", async function () {
+            const query = inputBusqueda.value.trim();
+
+            const respuesta = await fetch(`/usuarios/buscar?q=${encodeURIComponent(query)}`);
+            const datos = await respuesta.json();
+
+            lista.innerHTML = ""; // limpia
+
+            if (datos.length === 0) {
+                lista.innerHTML = "<p>No users found.</p>";
+                return;
+            }
+
+            datos.forEach(usuario => {
+                lista.innerHTML += `
+                    <div class="usuario-card">
+                        <div class="usuario-info">
+                            <p><strong>${usuario.nombre}</strong> &nbsp;&nbsp; ID: ${usuario.documento} &nbsp;&nbsp; ${usuario.rol}</p>
+                        </div>
+                        <div class="usuario-acciones">
+                            <a href="/editar/${usuario._id}" class="btn-icono" aria-label="Editar">
+                                <img src="/static/icons/edit.png" alt="Editar">
+                            </a>
+                            <a href="#" class="btn-icono btn-eliminar-usuario"
+                            data-nombre="${usuario.nombre}"
+                            data-url="/admin/eliminar/${usuario._id}"
+                            aria-label="Eliminar">
+                                <img src="/static/icons/delete.png" alt="Eliminar">
+                            </a>
+                        </div>
+                    </div>
+                `;
+                
+            });
+        });
+    });
+    function conectarBotonesEliminar() {
+        const botonesEliminar = document.querySelectorAll(".btn-eliminar-usuario");
+
+        botonesEliminar.forEach(boton => {
+            boton.addEventListener("click", function (e) {
+            e.preventDefault();
+            const nombre = this.dataset.nombre;
+            const url = this.dataset.url;
+            abrirPopup(nombre, url);
+            });
+        });
+    }
+
+</script>
+
+
+
+{% endblock %}

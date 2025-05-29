@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block contenido %}
+<div class="login-contenedor">
+    <form method="POST" class="login-card">
+        <img src="{{ url_for('static', filename='logo.png') }}" alt="Logo" class="logo-login">
+        <h2>COLOMBIA</h2>
+        <h3>REALTY HUB</h3>
+        <p class="subtitulo-login">Password recovery</p>
+
+        {{ form.hidden_tag() }}
+
+        <div class="form-group">
+            {{ form.id.label(class="form-label") }}
+            {{ form.id(class="form-control") }}
+        </div>
+
+        <div class="form-group">
+            {{ form.email.label(class="form-label") }}
+            {{ form.email(class="form-control") }}
+        </div>
+
+        <div style="text-align: center; margin-top: 1rem;">
+            {{ form.submit(class="boton-dorado") }}
+        </div>
+
+        <div class="enlace-login">
+            <a href="{{ url_for('auth.login') }}">Return</a>
+        </div>
+    </form>
+</div>
+{% endblock %}
